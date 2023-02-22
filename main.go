@@ -17,7 +17,7 @@ import (
 
 const metadataBaseEndpoint = "http://169.254.169.254/latest/meta-data/"
 
-type EcsMetadata struct {
+type Ec2Metadata struct {
 	Hostname           string `json:"hostname,omitempty"`
 	PrivateIpV4Address string `json:"privateIpV4Address,omitempty"`
 	PublicIpV4Address  string `json:"publicIpV4Address,omitempty"`
@@ -33,27 +33,27 @@ func main() {
 	}
 	flag.Parse()
 
-	ecsMetadata, err := getMetadata()
+	ec2Metadata, err := getMetadata()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	if envPath != nil || strings.Trim(*envPath, " ") != "" {
-		err := writeEnvFile(ecsMetadata, envPath)
+	if envPath != nil && strings.Trim(*envPath, " ") != "" {
+		err := writeEnvFile(ec2Metadata, envPath)
 		if err != nil {
 			log.Fatalln(err)
 		}
 	} else {
-		ecsMetadataAsJson, err := json.Marshal(ecsMetadata)
+		ec2MetadataAsJson, err := json.Marshal(ec2Metadata)
 		if err != nil {
 			log.Fatalln(err)
 		}
 
-		fmt.Println(string(ecsMetadataAsJson))
+		fmt.Println(string(ec2MetadataAsJson))
 	}
 }
 
-func getMetadata() (*EcsMetadata, error) {
+func getMetadata() (*Ec2Metadata, error) {
 	hostname, err := getHostName()
 	if err != nil {
 		return nil, err
@@ -79,7 +79,7 @@ func getMetadata() (*EcsMetadata, error) {
 		return nil, err
 	}
 
-	ecsMetadata := &EcsMetadata{
+	ecsMetadata := &Ec2Metadata{
 		Hostname:           hostname,
 		PrivateIpV4Address: privateIp,
 		PublicIpV4Address:  publicIp,
@@ -153,14 +153,14 @@ func getAvailabilityZone() (string, error) {
 	return value, nil
 }
 
-func writeEnvFile(ecsMetadata *EcsMetadata, path *string) error {
+func writeEnvFile(ec2Metadata *Ec2Metadata, path *string) error {
 	envMap := make(map[string]string)
 
-	envMap["META_EC2_HOSTNAME"] = ecsMetadata.Hostname
-	envMap["META_EC2_INSTANCE_TYPE"] = ecsMetadata.InstanceType
-	envMap["META_EC2_AVAILABILITY_ZONE"] = ecsMetadata.AvailabilityZone
-	envMap["META_EC2_PRIVATE_IP"] = ecsMetadata.PrivateIpV4Address
-	envMap["META_EC2_PUBLIC_IP"] = ecsMetadata.PublicIpV4Address
+	envMap["META_EC2_HOSTNAME"] = ec2Metadata.Hostname
+	envMap["META_EC2_INSTANCE_TYPE"] = ec2Metadata.InstanceType
+	envMap["META_EC2_AVAILABILITY_ZONE"] = ec2Metadata.AvailabilityZone
+	envMap["META_EC2_PRIVATE_IP"] = ec2Metadata.PrivateIpV4Address
+	envMap["META_EC2_PUBLIC_IP"] = ec2Metadata.PublicIpV4Address
 
 	filename := filepath.Join(*path, "ec2-metadata")
 	err := godotenv.Write(envMap, filename)
