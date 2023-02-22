@@ -162,7 +162,7 @@ func writeEnvFile(ecsMetadata *EcsMetadata, path *string) error {
 	envMap["META_EC2_PRIVATE_IP"] = ecsMetadata.PrivateIpV4Address
 	envMap["META_EC2_PUBLIC_IP"] = ecsMetadata.PublicIpV4Address
 
-	filename := filepath.Join(*path, "promtail-ec2-metadata")
+	filename := filepath.Join(*path, "ec2-metadata")
 	err := godotenv.Write(envMap, filename)
 
 	return err
