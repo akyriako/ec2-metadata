@@ -11,7 +11,6 @@ import (
 	"net/url"
 	"os"
 	"path"
-	"path/filepath"
 	"strings"
 )
 
@@ -26,7 +25,7 @@ type Ec2Metadata struct {
 }
 
 func main() {
-	envPath := flag.String("path", "", "write metadata as an environment file to this envPath")
+	envPath := flag.String("path", "", "write metadata as an environment file to this path")
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
@@ -162,8 +161,8 @@ func writeEnvFile(ec2Metadata *Ec2Metadata, path *string) error {
 	envMap["META_EC2_PRIVATE_IP"] = ec2Metadata.PrivateIpV4Address
 	envMap["META_EC2_PUBLIC_IP"] = ec2Metadata.PublicIpV4Address
 
-	filename := filepath.Join(*path, "ec2-metadata")
-	err := godotenv.Write(envMap, filename)
+	//filename := filepath.Join(*path, "ec2-metadata")
+	err := godotenv.Write(envMap, *path)
 
 	return err
 }

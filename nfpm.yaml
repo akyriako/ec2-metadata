@@ -1,0 +1,43 @@
+# nfpm example configuration file
+#
+# check https://nfpm.goreleaser.com/configuration for detailed usage
+#
+name: "ec2-metadata"
+arch: "amd64"
+platform: "linux"
+version: "v0.1.1"
+section: "default"
+priority: "extra"
+replaces:
+- ec2-metadata
+provides:
+- ec2-metadata
+#depends:
+#- foo
+#- bar
+#recommends:
+#- whatever
+#suggests:
+#- something-else
+#conflicts:
+#- not-foo
+#- not-bar
+maintainer: "Kyriakos Akriotis <kyriakos.akriotis@t-systems.com>"
+description: |
+  Retrieve metadata from AWS or OpenStack endpoint and save them as env files
+vendor: "Kyriakos Akritois"
+#homepage: "http://example.com"
+license: "MIT"
+#changelog: "changelog.yaml"
+contents:
+- src: .
+  dst: /usr/bin/ec2-metadata
+#overrides:
+#  rpm:
+#    scripts:
+#      preinstall: ./scripts/preinstall.sh
+#      postremove: ./scripts/postremove.sh
+#  deb:
+#    scripts:
+#      postinstall: ./scripts/postinstall.sh
+#      preremove: ./scripts/preremove.sh
